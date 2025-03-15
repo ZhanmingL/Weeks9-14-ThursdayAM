@@ -11,11 +11,6 @@ public class FirstQuestion : MonoBehaviour
 
     public Canvas canvas;
 
-    void Start()
-    {
-
-    }
-
     public void MouseJustEnter()
     {
         image.color = Color.red;
