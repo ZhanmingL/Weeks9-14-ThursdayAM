@@ -17,6 +17,8 @@ public class KitClock : MonoBehaviour
     Coroutine clockIsRunning;
     IEnumerator doOneHour;
 
+    KitChime currentKitChime;
+
     void Start()
     {
         clockIsRunning = StartCoroutine(MoveTheClock());
