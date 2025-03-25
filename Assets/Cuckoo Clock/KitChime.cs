@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class KitChime : MonoBehaviour
 {
-    public GameObject bird;
+    public GameObject bird; // I used the same script of doing coding gym, so that there is an error in Unity, because in class job has no bird.
 
     float t = 0;
 
