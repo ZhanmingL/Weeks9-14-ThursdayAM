@@ -5,6 +5,9 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public GameObject bulletPrefab;
+    public GameObject enemyPrefab;
+
+    public float t = 0;
 
     public Transform shooterPos; //Reference of the triangle on spinner. I use it to get the position value.
 
@@ -21,5 +24,19 @@ public class GameManager : MonoBehaviour
             GameObject newBullet = Instantiate(bulletPrefab, shooterPos.transform.position, Quaternion.identity);
             Destroy(newBullet, 3); //Destroy that new bullet in 3 seconds!
         }
+        t += Time.deltaTime;
+        if(t > 3)
+        {
+            t = 0;
+            enemySpawn();
+        }
+    }
+
+    void enemySpawn()
+    {
+        //Spawn issues, I will fix later.
+        Vector2 enemyStartPos = new Vector2(Screen.width, Random.Range(0, 3));
+        Vector2 cameraPos = Camera.main.WorldToScreenPoint(enemyStartPos);
+        GameObject newEnemy = Instantiate(enemyPrefab, cameraPos, Quaternion.identity);
     }
 }
