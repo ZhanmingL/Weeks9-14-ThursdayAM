@@ -1001,8 +1001,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 4477196925018584433, guid: 550225ad56dcd7241afa3fd5a84e9df7, type: 3}
   enemyPrefab: {fileID: 994299881745482253, guid: 57250fd22ceded643b44fa9fdcc291f9, type: 3}
+  gameOverUI: {fileID: 0}
+  gameWinUI: {fileID: 0}
   t: 0
   shooterPos: {fileID: 635022730}
+  HP: {fileID: 492339399}
+  Timer: {fileID: 1209876796}
 --- !u!4 &1875548014
 Transform:
   m_ObjectHideFlags: 0
