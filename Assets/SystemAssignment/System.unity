@@ -1155,7 +1155,7 @@ MonoBehaviour:
   enemyPrefab: {fileID: 994299881745482253, guid: 57250fd22ceded643b44fa9fdcc291f9, type: 3}
   gameOverUI: {fileID: 46198310}
   gameWinUI: {fileID: 1231584791}
-  t: 0
+  enemyT: 0
   shooterPos: {fileID: 635022730}
   HP: {fileID: 492339399}
   Timer: {fileID: 1209876796}
