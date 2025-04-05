@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     public Slider HP;
     public Slider Timer;
 
+    public List<GameObject> bulletList;
+
     void Start()
     {
         //Set those pages to false at the beginning.
@@ -32,6 +34,8 @@ public class GameManager : MonoBehaviour
         Timer.minValue = 0;
         Timer.value = HP.maxValue;
         StartCoroutine(TimerCounter()); //Run TimerCounter Coroutine when the game is started.
+
+        bulletList = new List<GameObject>();
     }
 
 
@@ -40,7 +44,11 @@ public class GameManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         { //When player clicks left mouse button, a bullet will spawn on the triangle shooter's position and flying.
             GameObject newBullet = Instantiate(bulletPrefab, shooterPos.transform.position, Quaternion.identity);
-            Destroy(newBullet, 3); //Destroy that new bullet in 3 seconds!
+
+            bulletList.Add(newBullet); //Add spawned new bullets to my List in order to determine position between enemies and bullets.
+
+            //Destroy(newBullet, 3); //Destroy that new bullet in 3 seconds!
+            StartCoroutine(DestroyBullet(newBullet)); //Change Destroy() to StartCoroutine() so that I can also remove from list!
         }
         t += Time.deltaTime;
         if(t > 3)
@@ -80,5 +88,17 @@ public class GameManager : MonoBehaviour
         }
         //When player experiences all the time, he/she wins and activate winning page.
         gameWinUI.SetActive(true);
+    }
+
+    IEnumerator DestroyBullet(GameObject newBullet) //Coroutine that destroys that bullet after 3 seconds, also remove from list.
+    {
+        float time = 0;
+        while (time < 3)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+        bulletList.Remove(newBullet); //Remove from list.
+        Destroy(newBullet); //Destroy that bullet.
     }
 }
