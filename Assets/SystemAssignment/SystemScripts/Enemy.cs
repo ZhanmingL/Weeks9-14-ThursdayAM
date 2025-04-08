@@ -26,7 +26,7 @@ public class Enemy : MonoBehaviour
 
         if (gameManager.gameEnds) //When game over, destroy all enemy prefabs.
         {
-            Destroy(gameObject);
+            Destroy(gameObject); //Destroy this related enemy.
         }
 
         //Always check each enemy reaches left edge or not.
@@ -47,8 +47,8 @@ public class Enemy : MonoBehaviour
     {
         if(transform.position.x < Camera.main.ScreenToWorldPoint(Vector2.zero).x) //Determine the position of enemy touching screen left edge.
         {
-            Destroy(gameObject); //Destroy enemy.
-            OnLeft.Invoke(); //Losing HP.
+            Destroy(gameObject); //Destroy this related enemy.
+            OnLeft.Invoke(); //Losing HP and show hitting effect.
         }
     }
 }

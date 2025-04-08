@@ -13,8 +13,10 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverUI;
     public GameObject gameWinUI;
     //Reference of two visual icons (UI images) on the frozen Button.
-    public GameObject FrozenCoolingImage; //Unavailable Image, red one.
-    public GameObject FrozenOKImage; //Available Image, green one.
+    public GameObject frozenCoolingImage; //Unavailable Image, red one.
+    public GameObject frozenOKImage; //Available Image, green one.
+
+    public GameObject hitImage; //A red Image that suddenly appears and disappears showing player losing HP.
 
     bool allowShoot = true; //Bool that determine player can either shoot or not.
     bool frozen = true; //Boolean that allow when freezing Coroutine can run.
@@ -47,8 +49,10 @@ public class GameManager : MonoBehaviour
         gameWinUI.SetActive(false);
         gameOverUI.SetActive(false);
 
-        FrozenCoolingImage.SetActive(false); //Frozen has not been used.
-        FrozenOKImage.SetActive(true); //Frozen is available at the beginning of game.
+        frozenCoolingImage.SetActive(false); //Frozen has not been used.
+        frozenOKImage.SetActive(true); //Frozen is available at the beginning of game.
+
+        hitImage.SetActive(false); //Often don't show this object. Only show when enemy touches left edge.
 
         //Set Slider-HP value.
         HP.maxValue = 100;
@@ -83,13 +87,15 @@ public class GameManager : MonoBehaviour
 
                 bulletList.Add(newBullet); //Add spawned new bullets to my List in order to determine position between enemies and bullets.
 
+                //Old version of destroying newbullet prefab.
                 //Destroy(newBullet, 3); //Destroy that new bullet in 3 seconds!
+
                 StartCoroutine(DestroyBullet(newBullet)); //Change Destroy() to StartCoroutine() so that I can also remove from list!
                 StartCoroutine(BulletCool()); //After shoot one bullet, cool for a little bit time.
             }
         }
 
-        if (enemyOnFreezing)
+        if (enemyOnFreezing) //If not freezing, enemy spawns frequently by counting each period of seconds.
         {
             enemyT += enemyTSpeed * Time.deltaTime; //Timer that spawns enemies every few seconds.
             if (enemyT > timeToSpawnEnemy) //Time between each enemy spawns.
@@ -110,7 +116,9 @@ public class GameManager : MonoBehaviour
 
         enemy = newEnemy.GetComponent<Enemy>(); //Due to there is new enemy spawned, I have to get component in order to access Event. Besides, I also want to assign reference.
         enemy.speed = Random.Range(2, 5); //Each new spawned enemy receives a random speed, it's quite more interesting.
+        //I have two listeners that assign to my Event - OnLeft.
         enemy.OnLeft.AddListener(LosingHP); //Register LosingHP function to OnLeft event.
+        enemy.OnLeft.AddListener(LosingHPEffect); //Effect function to same event.
         enemy.gameManager = this; //So I assign reference to enemy gameObject.
     }
 
@@ -127,7 +135,23 @@ public class GameManager : MonoBehaviour
             StopCoroutine(timerIsDecreasing); //Stop decreasing UItimer.
         }
     }
-    
+    public void LosingHPEffect()
+    {
+        StartCoroutine(Hitting());
+    }
+
+    IEnumerator Hitting() //Let "player is hitting" effect show 0.15 second.
+    {
+        float t = 0;
+        hitImage.SetActive(true); //Appear hit image.
+        while (t < 0.15f) //Keep 0.15 second.
+        {
+            t += Time.deltaTime;
+            yield return null;
+        }
+        hitImage.SetActive(false); //Disapeear hit image.
+    }
+
     public void FindBulletTouch(GameObject newEnemy) //I want to use this function to determine touching.
     {
         for(int i = 0; i < bulletList.Count; i++)
@@ -158,8 +182,8 @@ public class GameManager : MonoBehaviour
         frozen = false; //Turn off this bool so that player cannot freeze again when this function is cooling.
         enemyOnFreezing = false; //Stop spawning enemies during freezing time.
         canMove = false; //Stop that enemy in screen.
-        FrozenCoolingImage.SetActive(true); //Frozen button is starting cooling, showing this red image.
-        FrozenOKImage.SetActive(false); //Frozen is not OK for now to use.
+        frozenCoolingImage.SetActive(true); //Frozen button is starting cooling, showing this red image.
+        frozenOKImage.SetActive(false); //Frozen is not OK for now to use.
         StopCoroutine(timerIsDecreasing); //Stop decreasing UItimer.
         float t = 0; //Start timer here.
         while (t < 3) //The first 3 seconds is freezing time, stop timer and enemy.
@@ -177,8 +201,8 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         frozen = true; //Now player can freeze.
-        FrozenCoolingImage.SetActive(false); //Now has finished cooling, no more waiting.
-        FrozenOKImage.SetActive(true); //It's OK to use now, show green image.
+        frozenCoolingImage.SetActive(false); //Now has finished cooling, no more waiting.
+        frozenOKImage.SetActive(true); //It's OK to use now, show green image.
     }
 
     IEnumerator TimerCounter() //Timer bar decreases.
