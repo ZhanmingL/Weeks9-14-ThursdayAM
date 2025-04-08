@@ -28,8 +28,10 @@ public class GameManager : MonoBehaviour
 
     public Transform shooterPos; //Reference of the triangle on spinner. I use it to get the position value.
 
+    //My reference of UI Sliders.
     public Slider HP;
     public Slider Timer;
+    public Slider Reloading;
 
     public TextMeshProUGUI timerText; //Record remaining time of timer.
 
@@ -56,6 +58,10 @@ public class GameManager : MonoBehaviour
         Timer.maxValue = 60;
         Timer.minValue = 0;
         Timer.value = HP.maxValue;
+        //Set Slider-Reloading value.
+        Reloading.maxValue = 0.5f;
+        Reloading.minValue = 0;
+        Reloading.value = Reloading.minValue;
 
         timerIsDecreasing = StartCoroutine(TimerCounter()); //Run TimerCounter Coroutine when the game is started.
 
@@ -207,9 +213,10 @@ public class GameManager : MonoBehaviour
         while (t < 0.5f) //This period of time has 0.5 second.
         {
             t += Time.deltaTime;
+            Reloading.value = t; //The length of reloading slider is increasing by t.
             yield return null;
         }
-        //After 0.5 second, allow player shoot again.
-        allowShoot = true;
+        allowShoot = true;//After 0.5 second, allow player shoot again.
+        Reloading.value = Reloading.minValue; //Set Reloading value to minValue again.
     }
 }
