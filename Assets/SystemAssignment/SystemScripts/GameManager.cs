@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,9 @@ public class GameManager : MonoBehaviour
     //Reference of game ending pages.
     public GameObject gameOverUI;
     public GameObject gameWinUI;
+    //Reference of two visual icons (UI images) on the frozen Button.
+    public GameObject FrozenCoolingImage; //Unavailable Image, red one.
+    public GameObject FrozenOKImage; //Available Image, green one.
 
     bool allowShoot = true; //Bool that determine player can either shoot or not.
     bool frozen = true; //Boolean that allow when freezing Coroutine can run.
@@ -27,6 +31,8 @@ public class GameManager : MonoBehaviour
     public Slider HP;
     public Slider Timer;
 
+    public TextMeshProUGUI timerText; //Record remaining time of timer.
+
     public List<GameObject> bulletList; //Track every bullet that spawned.
 
     Enemy enemy;
@@ -38,6 +44,10 @@ public class GameManager : MonoBehaviour
         //Set those pages to false at the beginning.
         gameWinUI.SetActive(false);
         gameOverUI.SetActive(false);
+
+        FrozenCoolingImage.SetActive(false); //Frozen has not been used.
+        FrozenOKImage.SetActive(true); //Frozen is available at the beginning of game.
+
         //Set Slider-HP value.
         HP.maxValue = 100;
         HP.minValue = 0;
@@ -46,7 +56,10 @@ public class GameManager : MonoBehaviour
         Timer.maxValue = 60;
         Timer.minValue = 0;
         Timer.value = HP.maxValue;
+
         timerIsDecreasing = StartCoroutine(TimerCounter()); //Run TimerCounter Coroutine when the game is started.
+
+        timerText.text = Timer.value.ToString(); //Set text to 60 when game starts.
 
         bulletList = new List<GameObject>(); //Initialize my bullet list.
 
@@ -114,7 +127,7 @@ public class GameManager : MonoBehaviour
         { //Find all my existing bullets.
             GameObject bulletNew = bulletList[i];
             float distance = Vector2.Distance(bulletNew.transform.position, newEnemy.transform.position); //I saw "Unity’s Mathf and Vector2/Vector3 functions" in the assignment brief, so I use Vector's distance function.
-            if (distance < 0.5f) //If one bullet touches one enemy 0.5 distance between bullet's pos and enemy's pos:
+            if (distance < 0.8f) //If one bullet touches one enemy 0.8 distance between bullet's pos and enemy's pos:
             {
                 bulletList.Remove(bulletNew); //Remove bullet prefab from list.
                 //Also destroy prefabs of enemy and bullet when touching together.
@@ -138,6 +151,8 @@ public class GameManager : MonoBehaviour
         frozen = false; //Turn off this bool so that player cannot freeze again when this function is cooling.
         enemyOnFreezing = false; //Stop spawning enemies during freezing time.
         canMove = false; //Stop that enemy in screen.
+        FrozenCoolingImage.SetActive(true); //Frozen button is starting cooling, showing this red image.
+        FrozenOKImage.SetActive(false); //Frozen is not OK for now to use.
         StopCoroutine(timerIsDecreasing); //Stop decreasing UItimer.
         float t = 0; //Start timer here.
         while (t < 3) //The first 3 seconds is freezing time, stop timer and enemy.
@@ -155,6 +170,8 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         frozen = true; //Now player can freeze.
+        FrozenCoolingImage.SetActive(false); //Now has finished cooling, no more waiting.
+        FrozenOKImage.SetActive(true); //It's OK to use now, show green image.
     }
 
     IEnumerator TimerCounter() //Timer bar decreases.
@@ -162,6 +179,7 @@ public class GameManager : MonoBehaviour
         while(Timer.value > 0) //When timer value is bigger than 0, keeping loading time.
         {
             Timer.value -= Time.deltaTime;
+            timerText.text = Timer.value.ToString(); //Update timer counter remaining time.
             yield return null;
         }
         //When player experiences all the time, he/she wins and activate winning page.
