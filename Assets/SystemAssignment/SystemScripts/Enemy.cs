@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class Enemy : MonoBehaviour
 {
-    public float speed = 3f;
+    public float speed = 5f;
 
     public UnityEvent OnLeft; //The event that controls enemy touching screen left edge.
 

@@ -1156,6 +1156,7 @@ MonoBehaviour:
   gameOverUI: {fileID: 46198310}
   gameWinUI: {fileID: 1231584791}
   enemyT: 0
+  enemySpawnMaxTime: 3
   shooterPos: {fileID: 635022730}
   HP: {fileID: 492339399}
   Timer: {fileID: 1209876796}

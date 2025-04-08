@@ -97,7 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d116432238111d438c7c376574f5ab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 5
   OnLeft:
     m_PersistentCalls:
       m_Calls: []
+  gameManager: {fileID: 0}

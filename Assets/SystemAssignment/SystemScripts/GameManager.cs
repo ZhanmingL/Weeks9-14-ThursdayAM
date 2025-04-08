@@ -11,7 +11,11 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverUI;
     public GameObject gameWinUI;
 
-    public float enemyT = 0;
+    bool allowShoot = true;
+
+    public float enemyT = 0; //Timer that increasing, in order to spawn an enemy.
+    public float enemyTSpeed = 1; //Speed that times DeltaTime to count time and spawn enemy.
+    public float timeToSpawnEnemy = 3; //When enemyT reaches this value, spawn an enemy.
 
     public Transform shooterPos; //Reference of the triangle on spinner. I use it to get the position value.
 
@@ -30,7 +34,7 @@ public class GameManager : MonoBehaviour
         HP.minValue = 0;
         HP.value = HP.maxValue;
         //Set Slider-Timer value.
-        Timer.maxValue = 30;
+        Timer.maxValue = 60;
         Timer.minValue = 0;
         Timer.value = HP.maxValue;
         StartCoroutine(TimerCounter()); //Run TimerCounter Coroutine when the game is started.
@@ -41,20 +45,25 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        { //When player clicks left mouse button, a bullet will spawn on the triangle shooter's position and flying.
-            GameObject newBullet = Instantiate(bulletPrefab, shooterPos.transform.position, Quaternion.identity);
+        if (allowShoot)
+        {
+            if (Input.GetMouseButtonDown(0))
+            { //When player clicks left mouse button, a bullet will spawn on the triangle shooter's position and flying.
+                GameObject newBullet = Instantiate(bulletPrefab, shooterPos.transform.position, Quaternion.identity);
 
-            bulletList.Add(newBullet); //Add spawned new bullets to my List in order to determine position between enemies and bullets.
+                bulletList.Add(newBullet); //Add spawned new bullets to my List in order to determine position between enemies and bullets.
 
-            //Destroy(newBullet, 3); //Destroy that new bullet in 3 seconds!
-            StartCoroutine(DestroyBullet(newBullet)); //Change Destroy() to StartCoroutine() so that I can also remove from list!
+                //Destroy(newBullet, 3); //Destroy that new bullet in 3 seconds!
+                StartCoroutine(DestroyBullet(newBullet)); //Change Destroy() to StartCoroutine() so that I can also remove from list!
+                StartCoroutine(BulletCool()); //After shoot one bullet, cool for a little bit time.
+            }
         }
 
-        enemyT += Time.deltaTime; //Timer that spawns enemies every few seconds.
-        if(enemyT > 3) //Time between each enemy spawns.
+        enemyT += enemyTSpeed * Time.deltaTime; //Timer that spawns enemies every few seconds.
+        if(enemyT > timeToSpawnEnemy) //Time between each enemy spawns.
         {
             enemyT = 0; //Reset time.
+            enemyTSpeed += 0.05f; //Next time to spawn an enemy faster. (Increasing difficulty)
             enemySpawn(); //Execute my function to spawn enemy.
         }
     }
@@ -119,5 +128,18 @@ public class GameManager : MonoBehaviour
         }
         bulletList.Remove(newBullet); //Remove from list.
         Destroy(newBullet); //Destroy that bullet.
+    }
+
+    IEnumerator BulletCool()
+    {
+        allowShoot = false;
+        float t = 0;
+        while (t < 0.2f)
+        {
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        allowShoot = true;
     }
 }
