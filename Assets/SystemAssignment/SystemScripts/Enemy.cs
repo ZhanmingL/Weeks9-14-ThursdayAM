@@ -7,6 +7,8 @@ public class Enemy : MonoBehaviour
 {
     public float speed = 5f;
 
+    public bool canMove = true;
+
     public UnityEvent OnLeft; //The event that controls enemy touching screen left edge.
 
     public GameManager gameManager; //Reference of GameManager.
@@ -20,9 +22,12 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         //When enemy is instantiated, it will move from right edge of screen to left edge of screen.
-        Vector2 pos = transform.position;
-        pos.x -= speed * Time.deltaTime;
-        transform.position = pos;
+        if (canMove)
+        {
+            Vector2 pos = transform.position;
+            pos.x -= speed * Time.deltaTime;
+            transform.position = pos;
+        }
 
         gameManager.FindBulletTouch(gameObject); //Determine bullet touching enemy.
 
