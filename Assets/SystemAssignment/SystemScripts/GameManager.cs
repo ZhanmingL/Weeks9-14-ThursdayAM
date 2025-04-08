@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
         //Set Slider-Reloading value.
         Reloading.maxValue = 0.5f;
         Reloading.minValue = 0;
-        Reloading.value = Reloading.minValue;
+        Reloading.value = Reloading.maxValue;
 
         timerIsDecreasing = StartCoroutine(TimerCounter()); //Run TimerCounter Coroutine when the game is started.
 
@@ -123,6 +123,7 @@ public class GameManager : MonoBehaviour
             gameOverUI.SetActive(true); //GameOver when player loses all HP.
             enemyOnFreezing = true; //Stop spawning enemies when player wins.
             gameEnds = true; //Destroy all enemy prefabs.
+            allowShoot = false; //Player cannot shoot when game ends.
             StopCoroutine(timerIsDecreasing); //Stop decreasing UItimer.
         }
     }
@@ -192,6 +193,7 @@ public class GameManager : MonoBehaviour
         gameWinUI.SetActive(true);
         enemyOnFreezing = true; //Stop spawning enemies when player wins.
         gameEnds = true; //Destroy all enemy prefabs.
+        allowShoot = false; //Cannot shoot when player wins.
     }
 
     IEnumerator DestroyBullet(GameObject newBullet) //Coroutine that destroys that bullet after 3 seconds, also remove from list.
@@ -209,6 +211,7 @@ public class GameManager : MonoBehaviour
     IEnumerator BulletCool()
     {
         allowShoot = false; //During this period of time, I don't allow player shoot again.
+        Reloading.value = Reloading.minValue; //Set Reloading value to minValue when start reloading.
         float t = 0; //Count this cooling time from zero.
         while (t < 0.5f) //This period of time has 0.5 second.
         {
@@ -217,6 +220,5 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         allowShoot = true;//After 0.5 second, allow player shoot again.
-        Reloading.value = Reloading.minValue; //Set Reloading value to minValue again.
     }
 }

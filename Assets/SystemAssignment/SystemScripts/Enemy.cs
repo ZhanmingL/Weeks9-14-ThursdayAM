@@ -7,7 +7,7 @@ public class Enemy : MonoBehaviour
 {
     public float speed;
 
-    public UnityEvent OnLeft; //The event that controls enemy touching screen left edge.
+    public UnityEvent OnLeft; //The event that controls enemy touching screen left edge. Add listener from GameManager class to lose HP.
 
     public GameManager gameManager; //Reference of GameManager.
 
